@@ -1,0 +1,22 @@
+<mat-card>
+  <mat-card-title>A good post</mat-card-title>
+  <mat-card-content>
+    <mat-form-field>
+      <textarea
+        matInput
+        name="comments"
+        id="comments"
+        cols="30"
+        rows="10"
+        [(ngModel)]="temp"
+      ></textarea>
+    </mat-form-field>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" (click)="onAddPost()">
+      Save Post
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+<p>{{ newPost }}</p>
