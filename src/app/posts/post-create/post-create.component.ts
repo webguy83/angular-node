@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { IPost } from '../../interfaces';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-post-create',
@@ -7,15 +8,18 @@ import { IPost } from '../../interfaces';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent {
-  title = '';
-  content = '';
-
   @Output() postCreated = new EventEmitter<IPost>();
+  formName: '';
+  formContent: '';
 
-  onAddPost() {
+  onAddPost(form: NgForm) {
+    if (form.invalid) {
+      return;
+    }
+    console.log(form);
     this.postCreated.emit({
-      title: this.title,
-      content: this.content,
+      title: form.value.title,
+      content: form.value.content,
     });
   }
 }

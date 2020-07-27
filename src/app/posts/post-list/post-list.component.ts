@@ -18,18 +18,5 @@ export class PostListComponent {
     this.panelOpened = !this.panelOpened;
   }
 
-  @Input() posts: IPost[] = [
-    // {
-    //   title: 'My first post',
-    //   content: 'This is some funny post okay yayyya',
-    // },
-    // {
-    //   title: 'My second post',
-    //   content: 'hazzzah hahah okay I will be there',
-    // },
-    // {
-    //   title: 'My second post',
-    //   content: 'This is a bizarre kind of post!',
-    // },
-  ];
+  @Input() posts: IPost[] = [];
 }

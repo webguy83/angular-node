@@ -1,24 +1,44 @@
 <mat-card>
-  <mat-card-title>Enter a post</mat-card-title>
-  <mat-card-content>
-    <mat-form-field>
-      <input matInput type="text" placeholder="Title" [(ngModel)]="title" />
-    </mat-form-field>
-    <mat-form-field>
-      <textarea
-        matInput
-        placeholder="Content"
-        name="comments"
-        id="comments"
-        cols="30"
-        rows="10"
-        [(ngModel)]="content"
-      ></textarea>
-    </mat-form-field>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="onAddPost()">
-      Save Post
-    </button>
-  </mat-card-actions>
+  <form #myForm="ngForm" (ngSubmit)="onAddPost(myForm)">
+    <mat-card-title>Enter a post</mat-card-title>
+    <mat-card-content>
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          placeholder="Title"
+          name="title"
+          [(ngModel)]="formName"
+          #title="ngModel"
+          minlength="5"
+          required
+        />
+      </mat-form-field>
+      <mat-error *ngIf="title.invalid && title.dirty && title.touched"
+        >Please enter a valid title!</mat-error
+      >
+      <mat-form-field>
+        <textarea
+          matInput
+          placeholder="Content"
+          id="content"
+          cols="30"
+          rows="10"
+          name="content"
+          [(ngModel)]="formContent"
+          #content="ngModel"
+          minlength="5"
+          required
+        ></textarea>
+      </mat-form-field>
+      <mat-error *ngIf="content.invalid && content.dirty && content.touched"
+        >Please enter valid content!</mat-error
+      >
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">
+        Save Post
+      </button>
+    </mat-card-actions>
+  </form>
 </mat-card>

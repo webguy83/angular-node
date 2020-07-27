@@ -10,6 +10,8 @@ export class AppComponent {
   storePosts: IPost[] = [];
 
   addStorePosts(post: IPost) {
-    this.storePosts.push(post);
+    if (post.title.length >= 5 && post.content.length >= 10) {
+      this.storePosts.push(post);
+    }
   }
 }
