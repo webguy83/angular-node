@@ -1,4 +1,5 @@
 <app-header></app-header>
 <main>
-  <app-post-create></app-post-create>
+  <app-post-create (postCreated)="addStorePosts($event)"></app-post-create>
+  <app-post-list [posts]="storePosts"></app-post-list>
 </main>
