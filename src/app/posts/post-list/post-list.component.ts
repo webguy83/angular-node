@@ -34,4 +34,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   togglePanelOpened() {
     this.panelOpened = !this.panelOpened;
   }
+
+  onDeletePost(id: string) {
+    this.postsService.deletePost(id);
+  }
 }

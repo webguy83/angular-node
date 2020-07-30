@@ -46,10 +46,25 @@ export class PostsService {
 
   addPost(post: IPost) {
     this.http
-      .post<{ message: string }>('http://localhost:3000/posts', post)
-      .subscribe((data) => {
-        console.log(data.message);
+      .post<{ message: string; postId: string }>(
+        'http://localhost:3000/posts',
+        post
+      )
+      .subscribe((res) => {
+        post.id = res.postId;
         this.posts.push(post);
+        this.postsUpdateSubject.next([...this.posts]);
+      });
+  }
+
+  deletePost(id: string) {
+    this.http
+      .delete<{ message: string }>(`http://localhost:3000/posts/${id}`)
+      .subscribe(() => {
+        const filteredPosts = this.posts.filter((post) => {
+          return post.id !== id;
+        });
+        this.posts = filteredPosts;
         this.postsUpdateSubject.next([...this.posts]);
       });
   }

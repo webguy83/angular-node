@@ -21,11 +21,12 @@ app.post("/posts", (req, res, next) => {
     content: req.body.content
   })
   post.save().then((data) => {
-    console.log(data + " worked")
+    res.status(201).json({
+      message: "sent to the database",
+      postId: data._id
+    })
   }).catch(console.log)
-  res.status(201).json({
-    message: "sent to the database"
-  })
+
 })
 
 app.get("/posts", (req, res, next) => {
@@ -35,6 +36,17 @@ app.get("/posts", (req, res, next) => {
       posts
     })
   }).catch(console.log)
+})
+
+app.delete('/posts/:id', (req, res, next) => {
+  Post.deleteOne({
+    _id: req.params.id
+  }).then(() => {
+    res.status(200).json({
+      message: 'Entry deleted'
+    })
+  })
+    .catch(console.log)
 })
 
 app.listen(process.env.PORT || 3000, () => {
