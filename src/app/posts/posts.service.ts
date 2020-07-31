@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPost } from '../interfaces';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
@@ -40,6 +40,12 @@ export class PostsService {
       });
   }
 
+  getPost(id: string): Observable<{ message: string; post: IPostLoadedData }> {
+    return this.http.get<{ message: string; post: IPostLoadedData }>(
+      `http://localhost:3000/posts/${id}`
+    );
+  }
+
   updatePosts() {
     return this.postsUpdateSubject.asObservable();
   }
@@ -54,6 +60,14 @@ export class PostsService {
         post.id = res.postId;
         this.posts.push(post);
         this.postsUpdateSubject.next([...this.posts]);
+      });
+  }
+
+  updatePost(post: IPost) {
+    this.http
+      .put<{ message: string }>(`http://localhost:3000/posts/${post.id}`, post)
+      .subscribe((res) => {
+        console.log(res.message);
       });
   }
 

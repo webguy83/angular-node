@@ -1,6 +1,8 @@
 <mat-card>
-  <form #myForm="ngForm" (ngSubmit)="onAddPost(myForm)">
-    <mat-card-title>Enter a post</mat-card-title>
+  <form #myForm="ngForm" (ngSubmit)="onSavePost(myForm)">
+    <mat-card-title
+      >{{ mode === "edit" ? "Edit a" : "Enter a new" }} post</mat-card-title
+    >
     <mat-card-content>
       <mat-form-field>
         <input
@@ -8,7 +10,7 @@
           type="text"
           placeholder="Title"
           name="title"
-          [(ngModel)]="formName"
+          [ngModel]="post?.title"
           #title="ngModel"
           minlength="5"
           required
@@ -25,7 +27,7 @@
           cols="30"
           rows="10"
           name="content"
-          [(ngModel)]="formContent"
+          [ngModel]="post?.content"
           #content="ngModel"
           minlength="5"
           required

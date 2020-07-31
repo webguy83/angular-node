@@ -29,6 +29,29 @@ app.post("/posts", (req, res, next) => {
 
 })
 
+app.get('/posts/:id', (req, res, next) => {
+  Post.findById(req.params.id).then(post => {
+    res.status(200).json({
+      message: "found the post",
+      post: post
+    })
+  })
+    .catch(console.log)
+})
+
+app.put("/posts/:id", (req, res, next) => {
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content
+  })
+  Post.updateOne({ _id: req.params.id }, post).then(result => {
+    res.status(200).json({
+      message: `The post ${post.title} was updated`
+    })
+  })
+})
+
 app.get("/posts", (req, res, next) => {
   Post.find().then(posts => {
     res.status(200).json({
