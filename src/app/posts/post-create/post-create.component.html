@@ -37,6 +37,12 @@
       <mat-error *ngIf="content.invalid && content.dirty && content.touched"
         >Please enter valid content!</mat-error
       >
+      <div>
+        <button mat-stroked-button type="button" (click)="filePicker.click()">
+          Upload Image
+        </button>
+        <input type="file" #filePicker />
+      </div>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="accent" type="submit">
