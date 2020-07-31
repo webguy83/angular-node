@@ -10,3 +10,8 @@ mat-spinner {
 input[type="file"] {
   visibility: hidden;
 }
+
+.image-preview > img {
+  width: 10rem;
+  margin: 2rem 0 0;
+}
