@@ -1,4 +1,5 @@
-<mat-card>
+<mat-spinner *ngIf="postsService.isLoading"></mat-spinner>
+<mat-card *ngIf="!postsService.isLoading">
   <form #myForm="ngForm" (ngSubmit)="onSavePost(myForm)">
     <mat-card-title
       >{{ mode === "edit" ? "Edit a" : "Enter a new" }} post</mat-card-title

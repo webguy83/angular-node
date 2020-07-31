@@ -15,10 +15,12 @@ interface IPostLoadedData {
 export class PostsService {
   posts: IPost[] = [];
   postsUpdateSubject = new Subject<IPost[]>();
+  isLoading = false;
 
   constructor(private http: HttpClient) {}
 
   getPosts() {
+    this.isLoading = true;
     this.http
       .get<{ message: string; posts: IPostLoadedData[] }>(
         'http://localhost:3000/posts'
@@ -35,6 +37,7 @@ export class PostsService {
         })
       )
       .subscribe((posts) => {
+        this.isLoading = false;
         this.posts = posts;
         this.postsUpdateSubject.next([...this.posts]);
       });
@@ -72,9 +75,11 @@ export class PostsService {
   }
 
   deletePost(id: string) {
+    this.isLoading = true;
     this.http
       .delete<{ message: string }>(`http://localhost:3000/posts/${id}`)
       .subscribe(() => {
+        this.isLoading = false;
         const filteredPosts = this.posts.filter((post) => {
           return post.id !== id;
         });
