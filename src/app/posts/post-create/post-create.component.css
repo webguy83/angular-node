@@ -15,3 +15,7 @@ input[type="file"] {
   width: 10rem;
   margin: 2rem 0 0;
 }
+
+mat-card-actions {
+  margin: 0 auto;
+}

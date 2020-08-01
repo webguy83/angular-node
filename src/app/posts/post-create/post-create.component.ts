@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IPost } from 'src/app/interfaces';
+import { mimeType } from './mime-type.validator';
 
 type Mode = 'create' | 'edit';
 
@@ -21,7 +22,10 @@ export class PostCreateComponent implements OnInit {
       Validators.required,
       Validators.minLength(5),
     ]),
-    image: new FormControl(null, [Validators.required]),
+    image: new FormControl(null, {
+      validators: [Validators.required],
+      asyncValidators: [mimeType],
+    }),
   });
   private postId: string;
 
@@ -44,6 +48,7 @@ export class PostCreateComponent implements OnInit {
             id: res.post._id,
             title: res.post.title,
             content: res.post.content,
+            imagePath: '',
           };
           this.form.setValue({
             title: this.post.title,
@@ -77,15 +82,20 @@ export class PostCreateComponent implements OnInit {
       return;
     }
     if (this.mode === 'create') {
-      this.postsService.addPost({
-        title: this.form.value.title,
-        content: this.form.value.content,
-      });
+      this.postsService.addPost(
+        {
+          title: this.form.value.title,
+          content: this.form.value.content,
+          imagePath: '',
+        },
+        this.form.value.image
+      );
     } else {
       this.postsService.updatePost({
         id: this.postId,
         title: this.form.value.title,
         content: this.form.value.content,
+        imagePath: this.form.value.image,
       });
     }
     this.form.reset();

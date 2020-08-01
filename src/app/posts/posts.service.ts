@@ -32,6 +32,7 @@ export class PostsService {
               id: post._id,
               title: post.title,
               content: post.content,
+              imagePath: '',
             };
           });
         })
@@ -53,14 +54,18 @@ export class PostsService {
     return this.postsUpdateSubject.asObservable();
   }
 
-  addPost(post: IPost) {
+  addPost(post: IPost, imageFile: File) {
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', imageFile);
     this.http
-      .post<{ message: string; postId: string }>(
+      .post<{ message: string; post: IPost }>(
         'http://localhost:3000/posts',
-        post
+        postData
       )
       .subscribe((res) => {
-        post.id = res.postId;
+        post.id = res.post.id;
         this.posts.push(post);
         this.postsUpdateSubject.next([...this.posts]);
       });

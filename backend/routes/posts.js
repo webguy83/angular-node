@@ -1,17 +1,45 @@
 const express = require('express');
 const Post = require('../models/post');
+const multer = require('multer');
 
 const router = express.Router();
 
-router.post("", (req, res, next) => {
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg'
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let error;
+    if (MIME_TYPE_MAP[file.mimetype]) {
+      error = null;
+    } else {
+      error = new Error('Invalid mime type!')
+    }
+    cb(error, './backend/images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}.${MIME_TYPE_MAP[file.mimetype]}`)
+  }
+})
+
+router.post("", multer({ storage }).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
+    imagePath: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   })
   post.save().then((data) => {
     res.status(201).json({
       message: "sent to the database",
-      postId: data._id
+      post: {
+        id: data._id,
+        title: data.title,
+        content: data.content,
+        imagePath: data.imagePath
+      }
     })
   }).catch(console.log)
 
