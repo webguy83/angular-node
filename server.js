@@ -1,8 +1,10 @@
+
 const express = require('express');
 const postRoutes = require('./backend/routes/posts');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const path = require("path");
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +15,7 @@ mongoose.connect(`mongodb+srv://jankguy83:${process.env.MONGO_DB_PASSWORD}@clust
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use("/images", express.static(path.join("backend/images")))
 
 app.use('/posts', postRoutes)
 

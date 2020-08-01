@@ -10,3 +10,12 @@
 mat-spinner {
   margin: 0 auto;
 }
+
+.img-container {
+  width: 100%;
+}
+
+.img-container > img {
+  width: 100%;
+  border: 1px solid black;
+}

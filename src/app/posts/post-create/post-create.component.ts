@@ -86,7 +86,6 @@ export class PostCreateComponent implements OnInit {
         {
           title: this.form.value.title,
           content: this.form.value.content,
-          imagePath: '',
         },
         this.form.value.image
       );
@@ -95,7 +94,6 @@ export class PostCreateComponent implements OnInit {
         id: this.postId,
         title: this.form.value.title,
         content: this.form.value.content,
-        imagePath: this.form.value.image,
       });
     }
     this.form.reset();

@@ -9,6 +9,7 @@ interface IPostLoadedData {
   __v: number;
   title: string;
   content: string;
+  imagePath: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -32,7 +33,7 @@ export class PostsService {
               id: post._id,
               title: post.title,
               content: post.content,
-              imagePath: '',
+              imagePath: post.imagePath,
             };
           });
         })
