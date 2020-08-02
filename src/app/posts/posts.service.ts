@@ -72,9 +72,17 @@ export class PostsService {
       });
   }
 
-  updatePost(post: IPost) {
+  updatePost(post: IPost, imageFile: File) {
+    const postData = new FormData();
+    postData.append('id', post.id);
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', imageFile);
     this.http
-      .put<{ message: string }>(`http://localhost:3000/posts/${post.id}`, post)
+      .put<{ message: string }>(
+        `http://localhost:3000/posts/${post.id}`,
+        postData
+      )
       .subscribe((res) => {
         console.log(res.message);
       });

@@ -45,6 +45,20 @@ router.post("", multer({ storage }).single("image"), (req, res, next) => {
 
 })
 
+router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content,
+    imagePath: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  })
+  Post.updateOne({ _id: req.params.id }, post).then(() => {
+    res.status(200).json({
+      message: `The post ${post.title} was updated`
+    })
+  })
+})
+
 router.get('/:id', (req, res, next) => {
   Post.findById(req.params.id).then(post => {
     res.status(200).json({
@@ -53,19 +67,6 @@ router.get('/:id', (req, res, next) => {
     })
   })
     .catch(console.log)
-})
-
-router.put("/:id", (req, res, next) => {
-  const post = new Post({
-    _id: req.body.id,
-    title: req.body.title,
-    content: req.body.content
-  })
-  Post.updateOne({ _id: req.params.id }, post).then(result => {
-    res.status(200).json({
-      message: `The post ${post.title} was updated`
-    })
-  })
 })
 
 router.get("", (req, res, next) => {

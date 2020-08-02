@@ -48,11 +48,12 @@ export class PostCreateComponent implements OnInit {
             id: res.post._id,
             title: res.post.title,
             content: res.post.content,
-            imagePath: '',
+            imagePath: res.post.imagePath,
           };
           this.form.setValue({
             title: this.post.title,
             content: this.post.content,
+            image: null,
           });
         });
       } else {
@@ -90,11 +91,14 @@ export class PostCreateComponent implements OnInit {
         this.form.value.image
       );
     } else {
-      this.postsService.updatePost({
-        id: this.postId,
-        title: this.form.value.title,
-        content: this.form.value.content,
-      });
+      this.postsService.updatePost(
+        {
+          id: this.postId,
+          title: this.form.value.title,
+          content: this.form.value.content,
+        },
+        this.form.value.image
+      );
     }
     this.form.reset();
     this.router.navigate(['/']);
