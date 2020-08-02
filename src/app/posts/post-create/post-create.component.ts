@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PostsService } from '../posts.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { IPost } from 'src/app/interfaces';
 import { mimeType } from './mime-type.validator';
 
@@ -31,7 +31,6 @@ export class PostCreateComponent implements OnInit {
 
   constructor(
     public postsService: PostsService,
-    private router: Router,
     private route: ActivatedRoute
   ) {}
 
@@ -101,6 +100,5 @@ export class PostCreateComponent implements OnInit {
       );
     }
     this.form.reset();
-    this.router.navigate(['/']);
   }
 }

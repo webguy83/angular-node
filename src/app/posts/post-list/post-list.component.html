@@ -28,6 +28,14 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+<mat-paginator
+  *ngIf="posts.length > 0"
+  [length]="totalPosts"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="pageSizeOptions"
+  (page)="onPageEvent($event)"
+>
+</mat-paginator>
 <p class="info-text" *ngIf="posts.length <= 0 && !postsService.isLoading">
   There are no posts.
 </p>

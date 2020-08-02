@@ -3,6 +3,7 @@ import { IPost } from '../interfaces';
 import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface IPostLoadedData {
   _id: string;
@@ -12,36 +13,47 @@ interface IPostLoadedData {
   imagePath: string;
 }
 
+interface IPostDataTotalPosts {
+  posts: IPost[];
+  totalPosts: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   posts: IPost[] = [];
-  postsUpdateSubject = new Subject<IPost[]>();
+  postsUpdateSubject = new Subject<IPostDataTotalPosts>();
   isLoading = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts() {
+  getPosts(pageSize: number, currentPage: number) {
     this.isLoading = true;
     this.http
-      .get<{ message: string; posts: IPostLoadedData[] }>(
-        'http://localhost:3000/posts'
+      .get<{ message: string; posts: IPostLoadedData[]; totalPosts: number }>(
+        `http://localhost:3000/posts?pagesize=${pageSize}&currentpage=${currentPage}`
       )
-      .pipe(
+      .pipe<IPostDataTotalPosts>(
         map((postData) => {
-          return postData.posts.map<IPost>((post) => {
-            return {
-              id: post._id,
-              title: post.title,
-              content: post.content,
-              imagePath: post.imagePath,
-            };
-          });
+          return {
+            posts: postData.posts.map<IPost>((post) => {
+              return {
+                id: post._id,
+                title: post.title,
+                content: post.content,
+                imagePath: post.imagePath,
+              };
+            }),
+            totalPosts: postData.totalPosts,
+          };
         })
       )
-      .subscribe((posts) => {
+      .subscribe((postsData) => {
         this.isLoading = false;
-        this.posts = posts;
-        this.postsUpdateSubject.next([...this.posts]);
+        this.posts = postsData.posts;
+        this.postsUpdateSubject.next({
+          posts: [...this.posts],
+          totalPosts: postsData.totalPosts,
+        });
       });
   }
 
@@ -56,6 +68,7 @@ export class PostsService {
   }
 
   addPost(post: IPost, imageFile: File) {
+    this.isLoading = true;
     const postData = new FormData();
     postData.append('title', post.title);
     postData.append('content', post.content);
@@ -66,9 +79,8 @@ export class PostsService {
         postData
       )
       .subscribe((res) => {
-        post.id = res.post.id;
-        this.posts.push(post);
-        this.postsUpdateSubject.next([...this.posts]);
+        this.isLoading = false;
+        this.router.navigate(['/']);
       });
   }
 
@@ -83,22 +95,14 @@ export class PostsService {
         `http://localhost:3000/posts/${post.id}`,
         postData
       )
-      .subscribe((res) => {
-        console.log(res.message);
+      .subscribe(() => {
+        this.router.navigate(['/']);
       });
   }
 
   deletePost(id: string) {
-    this.isLoading = true;
-    this.http
-      .delete<{ message: string }>(`http://localhost:3000/posts/${id}`)
-      .subscribe(() => {
-        this.isLoading = false;
-        const filteredPosts = this.posts.filter((post) => {
-          return post.id !== id;
-        });
-        this.posts = filteredPosts;
-        this.postsUpdateSubject.next([...this.posts]);
-      });
+    return this.http.delete<{ message: string }>(
+      `http://localhost:3000/posts/${id}`
+    );
   }
 }

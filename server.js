@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const app = express();
 
-mongoose.connect(`mongodb+srv://jankguy83:${process.env.MONGO_DB_PASSWORD}@cluster-bunk.lfrbt.mongodb.net/node-angular?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://jankguy83:${process.env.MONGO_DB_PASSWORD}@cluster-bunk.lfrbt.mongodb.net/node-angular?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('DB is on yay!'))
   .catch(console.log)
 

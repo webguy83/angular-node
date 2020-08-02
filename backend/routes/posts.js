@@ -25,6 +25,40 @@ const storage = multer.diskStorage({
   }
 })
 
+router.get("", (req, res, next) => {
+  const { pagesize, currentpage } = req.query;
+  const postQuery = Post.find();
+  let posts = [];
+
+  if (pagesize && currentpage) {
+    postQuery.skip(+pagesize * (+currentpage - 1))
+      .limit(+pagesize)
+  }
+
+  postQuery.then(docs => {
+    posts = docs;
+    return Post.countDocuments()
+  })
+    .then(count => {
+      res.status(200).json({
+        message: "success",
+        totalPosts: count,
+        posts
+      })
+    })
+    .catch(console.log)
+})
+
+router.get('/:id', (req, res, next) => {
+  Post.findById(req.params.id).then(post => {
+    res.status(200).json({
+      message: "found the post",
+      post: post
+    })
+  })
+    .catch(console.log)
+})
+
 router.post("", multer({ storage }).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
@@ -57,25 +91,6 @@ router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
       message: `The post ${post.title} was updated`
     })
   })
-})
-
-router.get('/:id', (req, res, next) => {
-  Post.findById(req.params.id).then(post => {
-    res.status(200).json({
-      message: "found the post",
-      post: post
-    })
-  })
-    .catch(console.log)
-})
-
-router.get("", (req, res, next) => {
-  Post.find().then(posts => {
-    res.status(200).json({
-      message: "success",
-      posts
-    })
-  }).catch(console.log)
 })
 
 router.delete('/:id', (req, res, next) => {
