@@ -1,0 +1,33 @@
+<!-- <mat-spinner></mat-spinner> -->
+<mat-card>
+  <form>
+    <mat-card-title>Login</mat-card-title>
+    <mat-card-content>
+      <mat-form-field>
+        <input
+          matInput
+          type="email"
+          placeholder="Email"
+          name="email"
+          required
+        />
+      </mat-form-field>
+      <!-- <mat-error>Please enter a valid email!</mat-error> -->
+      <mat-form-field>
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          name="password"
+          required
+        />
+      </mat-form-field>
+      <!-- <mat-error>Please enter valid password!</mat-error> -->
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" type="submit">
+        Login
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>
