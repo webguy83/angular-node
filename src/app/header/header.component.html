@@ -14,7 +14,7 @@
     <button mat-button *ngIf="!isAuth" [routerLink]="'/signup'">
       Sign Up
     </button>
-    <button mat-button *ngIf="isAuth">
+    <button mat-button *ngIf="isAuth" (click)="onLogOut()">
       Log Out
     </button>
   </div>

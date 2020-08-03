@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface IUserCredResponse {
   message: string;
@@ -21,12 +22,15 @@ interface IAuthData {
 export class AuthService {
   private token: string = '';
   private isAuthSubject = new Subject<boolean>();
+  isAuth = false;
+  tokenTimer: number;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   setToken(token: string) {
     this.token = token;
     this.isAuthSubject.next(true);
+    this.isAuth = true;
   }
 
   getAuthStatusListener() {
@@ -37,9 +41,12 @@ export class AuthService {
     return this.token;
   }
 
-  deleteToken() {
-    // this.token = '';
-    // this.isAuthSubject.next(false);
+  onLogOut() {
+    clearTimeout(this.tokenTimer);
+    this.token = '';
+    this.isAuthSubject.next(false);
+    this.isAuth = false;
+    this.router.navigate(['/']);
   }
 
   createUser(email: string, password: string) {
@@ -55,7 +62,7 @@ export class AuthService {
 
   loginUser(email: string, password: string) {
     const data: IAuthData = { email, password };
-    return this.http.post<{ token: string }>(
+    return this.http.post<{ token: string; tokenExpiresIn: number }>(
       'http://localhost:3000/users/login',
       {
         email: data.email,
