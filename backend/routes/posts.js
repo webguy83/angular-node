@@ -1,6 +1,7 @@
 const express = require('express');
 const Post = require('../models/post');
 const multer = require('multer');
+const checkAuth = require('../middlewares/check-auth');
 
 const router = express.Router();
 
@@ -59,7 +60,7 @@ router.get('/:id', (req, res, next) => {
     .catch(console.log)
 })
 
-router.post("", multer({ storage }).single("image"), (req, res, next) => {
+router.post("", checkAuth, multer({ storage }).single("image"), (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
@@ -79,7 +80,7 @@ router.post("", multer({ storage }).single("image"), (req, res, next) => {
 
 })
 
-router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
+router.put("/:id", checkAuth, multer({ storage }).single("image"), (req, res, next) => {
   const post = new Post({
     _id: req.body.id,
     title: req.body.title,
@@ -93,7 +94,7 @@ router.put("/:id", multer({ storage }).single("image"), (req, res, next) => {
   })
 })
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAuth, (req, res, next) => {
   Post.deleteOne({
     _id: req.params.id
   }).then(() => {

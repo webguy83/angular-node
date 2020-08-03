@@ -1,6 +1,7 @@
 
 const express = require('express');
 const postRoutes = require('./backend/routes/posts');
+const userRoutes = require('./backend/routes/users');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -17,8 +18,8 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use("/images", express.static(path.join("backend/images")))
 
-app.use('/posts', postRoutes)
-
+app.use('/posts', postRoutes);
+app.use('/users', userRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Hazaah the server is going! Yes!')
