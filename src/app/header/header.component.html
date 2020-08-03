@@ -1,14 +1,21 @@
 <mat-toolbar color="primary">
-  <button mat-button [routerLink]="'/'">
-    Posts
-  </button>
-  <button mat-button style="margin-right: auto;" [routerLink]="'/create'">
-    Add a Post
-  </button>
-  <button mat-button [routerLink]="'/login'">
-    Log In
-  </button>
-  <button mat-button [routerLink]="'/signup'">
-    Sign Up
-  </button>
+  <div>
+    <button mat-button [routerLink]="'/'">
+      Home
+    </button>
+    <button mat-button *ngIf="isAuth" [routerLink]="'/create'">
+      Add a Post
+    </button>
+  </div>
+  <div>
+    <button mat-button *ngIf="!isAuth" [routerLink]="'/login'">
+      Log In
+    </button>
+    <button mat-button *ngIf="!isAuth" [routerLink]="'/signup'">
+      Sign Up
+    </button>
+    <button mat-button *ngIf="isAuth">
+      Log Out
+    </button>
+  </div>
 </mat-toolbar>

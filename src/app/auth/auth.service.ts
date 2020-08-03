@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 interface IUserCredResponse {
   message: string;
@@ -19,15 +20,27 @@ interface IAuthData {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private token: string = '';
+  private isAuthSubject = new Subject<boolean>();
+
+  constructor(private http: HttpClient) {}
 
   setToken(token: string) {
     this.token = token;
+    this.isAuthSubject.next(true);
+  }
+
+  getAuthStatusListener() {
+    return this.isAuthSubject.asObservable();
   }
 
   getToken() {
     return this.token;
   }
-  constructor(private http: HttpClient) {}
+
+  deleteToken() {
+    // this.token = '';
+    // this.isAuthSubject.next(false);
+  }
 
   createUser(email: string, password: string) {
     const data: IAuthData = { email, password };

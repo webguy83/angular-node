@@ -17,7 +17,9 @@ export class LoginComponent {
     this.authService
       .loginUser(form.value.email, form.value.password)
       .subscribe(({ token }) => {
-        this.authService.setToken(token);
+        if (token.length > 0) {
+          this.authService.setToken(token);
+        }
       });
   }
 }
