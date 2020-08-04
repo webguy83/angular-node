@@ -11,6 +11,7 @@ interface IPostLoadedData {
   title: string;
   content: string;
   imagePath: string;
+  creator: string;
 }
 
 interface IPostDataTotalPosts {
@@ -29,7 +30,12 @@ export class PostsService {
   getPosts(pageSize: number, currentPage: number) {
     this.isLoading = true;
     this.http
-      .get<{ message: string; posts: IPostLoadedData[]; totalPosts: number }>(
+      .get<{
+        message: string;
+        posts: IPostLoadedData[];
+        totalPosts: number;
+        creator: string;
+      }>(
         `http://localhost:3000/posts?pagesize=${pageSize}&currentpage=${currentPage}`
       )
       .pipe<IPostDataTotalPosts>(
@@ -41,6 +47,7 @@ export class PostsService {
                 title: post.title,
                 content: post.content,
                 imagePath: post.imagePath,
+                creator: post.creator,
               };
             }),
             totalPosts: postData.totalPosts,
