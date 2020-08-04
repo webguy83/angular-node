@@ -46,7 +46,14 @@ export class AuthService {
     this.token = '';
     this.isAuthSubject.next(false);
     this.isAuth = false;
+    this.clearAuthData();
     this.router.navigate(['/']);
+  }
+
+  private setAuthTimer(duration: number) {
+    this.tokenTimer = setTimeout(() => {
+      this.onLogOut();
+    }, duration * 1000);
   }
 
   createUser(email: string, password: string) {
@@ -62,12 +69,60 @@ export class AuthService {
 
   loginUser(email: string, password: string) {
     const data: IAuthData = { email, password };
-    return this.http.post<{ token: string; tokenExpiresIn: number }>(
-      'http://localhost:3000/users/login',
-      {
-        email: data.email,
-        password: data.password,
-      }
-    );
+    return this.http
+      .post<{ token: string; tokenExpiresIn: number }>(
+        'http://localhost:3000/users/login',
+        {
+          email: data.email,
+          password: data.password,
+        }
+      )
+      .subscribe(({ token, tokenExpiresIn }) => {
+        if (token.length > 0) {
+          this.setAuthTimer(tokenExpiresIn);
+          this.setToken(token);
+          const expireDate = new Date().getTime() + tokenExpiresIn * 1000;
+          this.saveAuthData(token, new Date(expireDate));
+          this.router.navigate(['/']);
+        }
+      });
+  }
+
+  private saveAuthData(token: string, expirationDate: Date) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+  }
+
+  private getAuthData() {
+    const token = localStorage.getItem('token');
+    const expireDate = localStorage.getItem('expiration');
+
+    if (!token || !expireDate) {
+      return;
+    }
+
+    return {
+      token,
+      expireDate: new Date(expireDate),
+    };
+  }
+
+  autoAuthUser() {
+    const authInfo = this.getAuthData();
+    if (!authInfo) {
+      return;
+    }
+    const expiresIn = authInfo.expireDate.getTime() - new Date().getTime();
+    if (expiresIn > 0) {
+      this.token = authInfo.token;
+      this.isAuth = true;
+      this.setAuthTimer(expiresIn / 1000);
+      this.isAuthSubject.next(true);
+    }
   }
 }
