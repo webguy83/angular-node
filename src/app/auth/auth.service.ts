@@ -64,13 +64,19 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const data: IAuthData = { email, password };
-    return this.http.post<IUserCredResponse>(
-      'http://localhost:3000/users/signup',
-      {
+    return this.http
+      .post<IUserCredResponse>('http://localhost:3000/users/signup', {
         email: data.email,
         password: data.password,
-      }
-    );
+      })
+      .subscribe(
+        () => {
+          this.router.navigate(['/']);
+        },
+        () => {
+          this.isAuthSubject.next(false);
+        }
+      );
   }
 
   loginUser(email: string, password: string) {
@@ -83,16 +89,21 @@ export class AuthService {
           password: data.password,
         }
       )
-      .subscribe(({ token, tokenExpiresIn, userId }) => {
-        if (token.length > 0) {
-          this.userId = userId;
-          this.setAuthTimer(tokenExpiresIn);
-          this.setToken(token);
-          const expireDate = new Date().getTime() + tokenExpiresIn * 1000;
-          this.saveAuthData(token, new Date(expireDate), this.userId);
-          this.router.navigate(['/']);
+      .subscribe(
+        ({ token, tokenExpiresIn, userId }) => {
+          if (token.length > 0) {
+            this.userId = userId;
+            this.setAuthTimer(tokenExpiresIn);
+            this.setToken(token);
+            const expireDate = new Date().getTime() + tokenExpiresIn * 1000;
+            this.saveAuthData(token, new Date(expireDate), this.userId);
+            this.router.navigate(['/']);
+          }
+        },
+        () => {
+          this.isAuthSubject.next(false);
         }
-      });
+      );
   }
 
   private saveAuthData(token: string, expirationDate: Date, userId: string) {
